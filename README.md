@@ -17,9 +17,7 @@ Also available on `VM` directly (`vm.SetMaxTicks`).
 
 # The Tengo Language
 
-[![GoDoc](https://godoc.org/github.com/d5/tengo/v2?status.svg)](https://godoc.org/github.com/d5/tengo/v2)
-![test](https://github.com/d5/tengo/workflows/test/badge.svg)
-[![Go Report Card](https://goreportcard.com/badge/github.com/d5/tengo)](https://goreportcard.com/report/github.com/d5/tengo)
+[![GoDoc](https://godoc.org/github.com/bryanaustin/tengo?status.svg)](https://godoc.org/github.com/bryanaustin/tengo)
 
 **Tengo is a small, dynamic, fast, secure script language for Go.** 
 
