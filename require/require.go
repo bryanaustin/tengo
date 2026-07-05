@@ -10,9 +10,9 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/d5/tengo/v2"
-	"github.com/d5/tengo/v2/parser"
-	"github.com/d5/tengo/v2/token"
+	"github.com/bryanaustin/tengo"
+	"github.com/bryanaustin/tengo/parser"
+	"github.com/bryanaustin/tengo/token"
 )
 
 // NoError asserts err is not an error.

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	"github.com/d5/tengo/v2/parser"
-	"github.com/d5/tengo/v2/token"
+	"github.com/bryanaustin/tengo/parser"
+	"github.com/bryanaustin/tengo/token"
 )
 
 // frame represents a function call frame.
@@ -31,6 +31,8 @@ type VM struct {
 	aborting    int64
 	maxAllocs   int64
 	allocs      int64
+	maxTicks    int64
+	ticks       int64
 	err         error
 }
 
@@ -51,6 +53,7 @@ func NewVM(
 		framesIndex: 1,
 		ip:          -1,
 		maxAllocs:   maxAllocs,
+		maxTicks:    -1,
 	}
 	v.frames[0].fn = bytecode.MainFunction
 	v.frames[0].ip = -1
@@ -64,6 +67,13 @@ func (v *VM) Abort() {
 	atomic.StoreInt64(&v.aborting, 1)
 }
 
+// SetMaxTicks sets an upper bound on the number of instructions a subsequent
+// Run may execute. A negative value (the default) means unlimited. Must be
+// called before Run.
+func (v *VM) SetMaxTicks(n int64) {
+	v.maxTicks = n
+}
+
 // Run starts the execution.
 func (v *VM) Run() (err error) {
 	// reset VM states
@@ -73,6 +83,7 @@ func (v *VM) Run() (err error) {
 	v.framesIndex = 1
 	v.ip = -1
 	v.allocs = v.maxAllocs + 1
+	v.ticks = v.maxTicks + 1
 
 	v.run()
 	atomic.StoreInt64(&v.aborting, 0)
@@ -97,6 +108,11 @@ func (v *VM) Run() (err error) {
 func (v *VM) run() {
 	for atomic.LoadInt64(&v.aborting) == 0 {
 		v.ip++
+		v.ticks--
+		if v.ticks == 0 {
+			v.err = ErrStepLimit
+			return
+		}
 
 		switch v.curInsts[v.ip] {
 		case parser.OpConstant:

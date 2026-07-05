@@ -1,3 +1,20 @@
+# bryanaustin/tengo
+
+Fork of [d5/tengo](https://github.com/d5/tengo) v2.17.0. Import path: `github.com/bryanaustin/tengo`
+
+**Added: deterministic VM step limit.** `maxAllocs` bounds allocations but a non-allocating loop (`for {}`) runs forever. This fork adds `SetMaxTicks(n int64)` — a per-`Run` opcode counter that fires `ErrStepLimit` after exactly `n` instructions, identically on every machine. Default is unlimited; existing behaviour is unchanged.
+
+```go
+compiled.SetMaxTicks(1_000_000)
+if errors.Is(compiled.Run(), tengo.ErrStepLimit) { ... }
+```
+
+Also available on `VM` directly (`vm.SetMaxTicks`). See [`STEP_LIMIT.md`](STEP_LIMIT.md) for design rationale and `step_limit_test.go` for tests.
+
+**Added: `parser.NewSourceFile(name)`** — returns a `*SourceFile` suitable for anchoring a hand-built `*parser.File` without going through the parser. See [`tengo-ast-poc/`](tengo-ast-poc/) for a working example.
+
+---
+
 # The Tengo Language
 
 [![GoDoc](https://godoc.org/github.com/d5/tengo/v2?status.svg)](https://godoc.org/github.com/d5/tengo/v2)

@@ -1,7 +1,7 @@
 package stdlib
 
 import (
-	"github.com/d5/tengo/v2"
+	"github.com/bryanaustin/tengo"
 )
 
 // BuiltinModules are builtin type standard library modules.

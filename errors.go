@@ -12,6 +12,10 @@ var (
 	// ErrObjectAllocLimit is an objects allocation limit error.
 	ErrObjectAllocLimit = errors.New("object allocation limit exceeded")
 
+	// ErrStepLimit is returned when a VM exceeds its configured step (instruction)
+	// limit set via VM.SetMaxTicks.
+	ErrStepLimit = errors.New("step limit exceeded")
+
 	// ErrIndexOutOfBounds is an error where a given index is out of the
 	// bounds.
 	ErrIndexOutOfBounds = errors.New("index out of bounds")

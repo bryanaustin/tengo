@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/d5/tengo/v2"
-	"github.com/d5/tengo/v2/parser"
+	"github.com/bryanaustin/tengo"
+	"github.com/bryanaustin/tengo/parser"
 )
 
 func main() {

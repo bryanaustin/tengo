@@ -50,6 +50,17 @@ type SourceFileSet struct {
 	LastFile *SourceFile   // cache of last file looked up
 }
 
+// sourceFileSize is a generous declared size for a hand-built source file.
+// Node positions are optional but, if assigned, must fall within this range.
+const sourceFileSize = 1 << 16
+
+// NewSourceFile returns a SourceFile suitable for anchoring a hand-built AST.
+// Assign it to the InputFile field of a *File. Node positions are optional and
+// may be left as NoPos.
+func NewSourceFile(name string) *SourceFile {
+	return NewFileSet().AddFile(name, -1, sourceFileSize)
+}
+
 // NewFileSet creates a new file set.
 func NewFileSet() *SourceFileSet {
 	return &SourceFileSet{

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/d5/tengo/v2/parser"
+	"github.com/bryanaustin/tengo/parser"
 )
 
 // Script can simplify compilation and execution of embedded scripts.
@@ -138,6 +138,7 @@ func (s *Script) Compile() (*Compiled, error) {
 		bytecode:      bytecode,
 		globals:       globals,
 		maxAllocs:     s.maxAllocs,
+		maxTicks:      -1,
 		fullClone:     true, // we do not share bytecode or global indexes with other clones
 	}, nil
 }
@@ -200,8 +201,17 @@ type Compiled struct {
 	bytecode      *Bytecode
 	globals       []Object
 	maxAllocs     int64
+	maxTicks      int64
 	lock          sync.RWMutex
 	fullClone     bool
+}
+
+// SetMaxTicks sets an upper bound on the number of instructions a subsequent
+// Run may execute. A negative value (the default) means unlimited.
+func (c *Compiled) SetMaxTicks(n int64) {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	c.maxTicks = n
 }
 
 // Run executes the compiled script in the virtual machine.
@@ -210,6 +220,7 @@ func (c *Compiled) Run() error {
 	defer c.lock.Unlock()
 
 	v := NewVM(c.bytecode, c.globals, c.maxAllocs)
+	v.SetMaxTicks(c.maxTicks)
 	return v.Run()
 }
 
@@ -219,6 +230,7 @@ func (c *Compiled) RunContext(ctx context.Context) (err error) {
 	defer c.lock.Unlock()
 
 	v := NewVM(c.bytecode, c.globals, c.maxAllocs)
+	v.SetMaxTicks(c.maxTicks)
 	ch := make(chan error, 1)
 	go func() {
 		defer func() {
@@ -266,6 +278,7 @@ func (c *Compiled) Clone() *Compiled {
 		bytecode:      c.bytecode,
 		globals:       make([]Object, len(c.globals)),
 		maxAllocs:     c.maxAllocs,
+		maxTicks:      c.maxTicks,
 		fullClone:     false, // this clone shares bytecode and global indexes with the 'original'
 	}
 	// copy global objects
