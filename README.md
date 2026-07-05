@@ -9,9 +9,9 @@ compiled.SetMaxTicks(1_000_000)
 if errors.Is(compiled.Run(), tengo.ErrStepLimit) { ... }
 ```
 
-Also available on `VM` directly (`vm.SetMaxTicks`). See [`STEP_LIMIT.md`](STEP_LIMIT.md) for design rationale and `step_limit_test.go` for tests.
+Also available on `VM` directly (`vm.SetMaxTicks`).
 
-**Added: `parser.NewSourceFile(name)`** — returns a `*SourceFile` suitable for anchoring a hand-built `*parser.File` without going through the parser. See [`tengo-ast-poc/`](tengo-ast-poc/) for a working example.
+**Added: `parser.NewSourceFile(name)`** — returns a `*SourceFile` suitable for anchoring a hand-built `*parser.File` without going through the parser.
 
 ---
 
